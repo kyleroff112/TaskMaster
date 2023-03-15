@@ -25,13 +25,13 @@ const LoginForm = ({ handleLogin }) => {
             <input
               type="text"
               className="form-control"
-              id="username"
+              id="loginusername"
               value={username}
               onChange={(event) => setUsername(event.target.value)}
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Password:</label>
+            <label htmlFor="loginpassword">Password:</label>
             <input
               type="password"
               className="form-control"

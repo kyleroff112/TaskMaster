@@ -11,7 +11,7 @@ const SignupForm = () => {
   const handleSignupSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('/api/signup', {
+      const response = await axios.post('/api/authRoutes', {
         username,
         password,
         email,
@@ -37,7 +37,7 @@ const SignupForm = () => {
             <input
               type="text"
               className="form-control"
-              id="username"
+              id="signupusername"
               value={username}
               onChange={(event) => setUsername(event.target.value)}
             />
@@ -47,7 +47,7 @@ const SignupForm = () => {
             <input
               type="password"
               className="form-control"
-              id="password"
+              id="signuppassword"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             />

@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
@@ -22,5 +21,7 @@ mongoose.connect('mongodb://localhost:27017/mydb', { useNewUrlParser: true });
 
 // Create a model based on your schema
 const User = mongoose.model('User', userSchema);
+
+console.log(User);
 
 module.exports = User;
