@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import LoginForm from './LoginForm';
-import SignupForm from './SignupForm';
+import LoginForm from './components/LoginForm';
+import SignupForm from './components/SignupForm';
+import TaskList from './components/TaskList';
 import './App.css';
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
   return (
     <div className="App">
       {loggedIn ? (
-        <h1>Welcome to the app!</h1>
+        <TaskList />
       ) : (
         <div>
           <LoginForm handleLogin={handleLogin} handleSignup={handleSignup} />
