@@ -1,5 +1,15 @@
 # Getting Started with Create React App
 
+We  created a simple task list that meets all your needs. Say goodbye to handwritten to-do lists with missing detail, and say hello to having all the information you need to get your tasks done. You can set reminders to important appointments, meetings, daily activities, and habits to the list.
+Adding tasks is quick and so is organizing them, but there's seemingly no end of variation in ways to organize them. Areas can contain tasks or projects; projects can contain tasks or headers that can also contain tasks; and tasks can contain subtasks if you want. It sounds confusing, but it isn't, which really speaks to how well Things is designed.
+The technologies used in the app are React for the front end. We used GraphQL with a Node.js and Express.js server.We used MongoDB and the Mongoose ODM for the database. We used queries and mutations for retrieving, adding, updating, and deleting data.We deployed it using Heroku.
+
+
+
+
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
