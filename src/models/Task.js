@@ -1,5 +1,6 @@
+const mongoose = require('mongoose');
 
-const taskSchema = {
+const taskSchema = new mongoose.Schema({
     id: {
       type: Number,
       required: true,
@@ -30,7 +31,7 @@ const taskSchema = {
       enum: ['low', 'medium', 'high'],
       default: 'medium',
     },
-  };
+  });
   
   export default taskSchema;
   

@@ -1,66 +1,82 @@
-import { BASE_URL } from '../utils/apiUtils';
+const Task = require('../../models/Task');
 
-async function getTasks() {
-  const response = await fetch(`${BASE_URL}/tasks`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`
+async function getAllTasks(req, res, next) {
+  try {
+    const tasks = await Task.find({ user: req.user._id }).sort({ createdAt: 'desc' });
+    res.json(tasks);
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getTaskById(req, res, next) {
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
     }
-  });
-  if (response.ok) {
-    return await response.json();
-  } else {
-    throw new Error('Failed to get tasks');
-  }
-}
-
-async function createTask(task) {
-  const response = await fetch(`${BASE_URL}/tasks`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${localStorage.getItem('token')}`
-    },
-    body: JSON.stringify(task)
-  });
-  if (response.ok) {
-    return await response.json();
-  } else {
-    throw new Error('Failed to create task');
-  }
-}
-
-async function updateTask(task) {
-  const response = await fetch(`${BASE_URL}/tasks/${task.id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${localStorage.getItem('token')}`
-    },
-    body: JSON.stringify(task)
-  });
-  if (response.ok) {
-    return await response.json();
-  } else {
-    throw new Error('Failed to update task');
-  }
-}
-
-async function deleteTask(id) {
-  const response = await fetch(`${BASE_URL}/tasks/${id}`, {
-    method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`
+    if (task.user.toString() !== req.user._id) {
+      return res.status(403).json({ message: 'You are not authorized to access this task' });
     }
-  });
-  if (response.ok) {
-    return true;
-  } else {
-    throw new Error('Failed to delete task');
+    res.json(task);
+  } catch (err) {
+    next(err);
   }
 }
 
-export const taskService = {
-  getTasks,
+async function createTask(req, res, next) {
+  try {
+    const task = new Task({
+      name: req.body.name,
+      description: req.body.description,
+      date: req.body.date,
+      user: req.user._id
+    });
+    await task.save();
+    res.json(task);
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function updateTask(req, res, next) {
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+    if (task.user.toString() !== req.user._id) {
+      return res.status(403).json({ message: 'You are not authorized to update this task' });
+    }
+    task.name = req.body.name;
+    task.description = req.body.description;
+    task.date = req.body.date;
+    await task.save();
+    res.json(task);
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function deleteTask(req, res, next) {
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+    if (task.user.toString() !== req.user._id) {
+      return res.status(403).json({ message: 'You are not authorized to delete this task' });
+    }
+    await task.remove();
+    res.json({ message: 'Task deleted successfully' });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = {
+  getAllTasks,
+  getTaskById,
   createTask,
   updateTask,
   deleteTask

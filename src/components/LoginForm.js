@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const LoginForm = ({ handleLogin }) => {
   const [username, setUsername] = useState('');
@@ -8,14 +9,15 @@ const LoginForm = ({ handleLogin }) => {
   const handleLoginSubmit = async (event) => {
     event.preventDefault();
     try {
-      await handleLogin({ username, password });
+      const response = await axios.post('/login', { username, password });
+      handleLogin(response.data);
     } catch (err) {
-      setError(err.message); // Use the setError function
+      setError(err.response.data.message);
     }
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center">
+    <div className=" container d-flex justify-content-center align-items-center">
       <div className="login-form-container">
         <h2>Login</h2>
         <form onSubmit={handleLoginSubmit}>

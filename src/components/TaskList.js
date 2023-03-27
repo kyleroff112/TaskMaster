@@ -3,15 +3,14 @@ import { taskService } from "../api/services/taskService";
 
 function TaskList() {
   const [tasks, setTasks] = useState([]);
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
-    //Fetch tasks from the API
-    taskService.getTasks().then((tasks) => {
+    //Fetch tasks from the API for the logged-in user
+    taskService.getTasks(userId).then((tasks) => {
       setTasks(tasks);
     });
-  }, []);
-
-
+  }, [userId]);
 
   return (
     <div className="container">
@@ -35,4 +34,3 @@ function TaskList() {
 }
 
 export default TaskList;
-
