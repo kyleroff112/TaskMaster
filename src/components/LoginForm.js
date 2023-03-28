@@ -7,32 +7,21 @@ const LoginForm = ({ handleLogin }) => {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-
-  const handleLoginSubmit = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/users/login', {
-        username,
-        password,
-      });
-      if (response && response.data) {
-        setSuccessMessage(response.data.message);
-        setUsername('');
-        setPassword('');
-        console.log('login successful');
-      }
+      const response = await handleLogin({username, password});
+      setSuccessMessage(response.data.message);
     } catch (err) {
       setErrorMessage(err.response.data.message);
     }
   };
-
-
-
+  
   return (
     <div className="container d-flex justify-content-center align-items-center">
       <div className="login-form-container">
         <h2>Login</h2>
-        <form onSubmit={handleLoginSubmit}>
+        <form onSubmit={handleSubmit}>
           {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
           <div className="form-group">
             <label htmlFor="username">Username:</label>
