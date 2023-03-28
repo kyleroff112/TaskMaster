@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { login } from '../api/services/userService';
+import axios from 'axios';
 
 const LoginForm = ({ handleLogin }) => {
   const [username, setUsername] = useState('');
@@ -9,12 +9,16 @@ const LoginForm = ({ handleLogin }) => {
   const handleLoginSubmit = async (event) => {
     event.preventDefault();
     try {
-      const data = await login(username, password);
-      handleLogin(data);
+      const response = await axios.post('/login', {
+        username,
+        password,
+      });
+      handleLogin(response.data);
     } catch (err) {
-      setError(err);
+      setError(err.response.data.message);
     }
   };
+  
 
   return (
     <div className="container d-flex justify-content-center align-items-center">
