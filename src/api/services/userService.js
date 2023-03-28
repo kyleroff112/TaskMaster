@@ -1,31 +1,69 @@
-// import apiUtils, { API_BASE_URL } from './apiUtils';
+const axios = require("axios");
+const User = require("../../models/User");
 
-// const BASE_URL = `${API_BASE_URL}/users`;
+const API_URL = 'http://localhost:5000/api'; // replace with your server's URL
 
-// export const userService = {
-//   getAll,
-//   getById,
-//   create,
-//   update,
-//   remove
-// };
+const userService = {
+    getAll,
+    getById,
+    update,
+    remove,
+    login,
+    signup,
+    logout
+};
 
-// function getAll() {
-//   return apiUtils.get(BASE_URL);
-// }
+function getAll() {
+    return axios.get(`${API_URL}/users`).then(handleResponse);
+}
 
-// function getById(id) {
-//   return apiUtils.get(`${BASE_URL}/${id}`);
-// }
+function getById(id) {
+    return axios.get(`${API_URL}/users/${id}`).then(handleResponse);
+}
 
-// function create(user) {
-//   return apiUtils.post(BASE_URL, user);
-// }
+function update(id, user) {
+    return axios.put(`${API_URL}/users/${id}`, user).then(handleResponse);
+}
 
-// function update(id, user) {
-//   return apiUtils.put(`${BASE_URL}/${id}`, user);
-// }
+function remove(id) {
+    return axios.delete(`${API_URL}/users/${id}`).then(handleResponse);
+}
 
-// function remove(id) {
-//   return apiUtils.delete(`${BASE_URL}/${id}`);
-// }
+function login(username, password) {
+    return axios.post(`${API_URL}/users/login`, { username, password }).then(handleResponse);
+}
+
+async function signup(username, email, password) {
+    const newUser = new User({
+      username,
+      email,
+      password
+    });
+    await newUser.save();
+    return axios.post(`${API_URL}/users/signup`, { username, email, password }).then(handleResponse);
+  }
+  
+
+
+function logout() {
+    return axios.post(`${API_URL}/logout`).then(handleResponse);
+}
+
+// handle API responses and errors
+function handleResponse(response) {
+    if (response.status === 401) {
+        // user is not authenticated
+        logout();
+        window.location.reload(true);
+    }
+
+    if (!response.data.success) {
+        const error = response.data.error || 'Unknown error';
+        return Promise.reject(error);
+    }
+
+    return response.data.data;
+}
+
+module.exports = userService;
+

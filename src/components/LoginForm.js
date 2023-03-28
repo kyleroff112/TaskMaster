@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { login } from '../api/services/userService';
 
 const LoginForm = ({ handleLogin }) => {
   const [username, setUsername] = useState('');
@@ -9,15 +9,15 @@ const LoginForm = ({ handleLogin }) => {
   const handleLoginSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('/login', { username, password });
-      handleLogin(response.data);
+      const data = await login(username, password);
+      handleLogin(data);
     } catch (err) {
-      setError(err.response.data.message);
+      setError(err);
     }
   };
 
   return (
-    <div className=" container d-flex justify-content-center align-items-center">
+    <div className="container d-flex justify-content-center align-items-center">
       <div className="login-form-container">
         <h2>Login</h2>
         <form onSubmit={handleLoginSubmit}>
@@ -42,7 +42,9 @@ const LoginForm = ({ handleLogin }) => {
               onChange={(event) => setPassword(event.target.value)}
             />
           </div>
-          <button className="btn btn-primary" type="submit">Login</button>
+          <button className="btn btn-primary" type="submit">
+            Login
+          </button>
         </form>
       </div>
     </div>
@@ -50,3 +52,4 @@ const LoginForm = ({ handleLogin }) => {
 };
 
 export default LoginForm;
+
