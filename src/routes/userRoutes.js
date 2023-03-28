@@ -21,7 +21,7 @@ router.post('/signup', async (req, res) => {
 // Authenticate a user
 router.post('/login', async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const user = await User.findOne({ username: req.body.username });
     if (!user) {
       throw new Error('Invalid login credentials');
     }
@@ -34,6 +34,7 @@ router.post('/login', async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
 
 // get all users
 router.get('/', async (req, res) => {

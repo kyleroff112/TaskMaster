@@ -11,11 +11,12 @@ const SignupForm = () => {
   const handleSignupSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('/signup', {
+      const response = await axios.post('http://localhost:5000/api/users/signup', {
         username,
         password,
         email,
       });
+
       setSuccessMessage(response.data.message);
       setUsername('');
       setPassword('');

@@ -4,28 +4,36 @@ import axios from 'axios';
 const LoginForm = ({ handleLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
 
   const handleLoginSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('/login', {
+      const response = await axios.post('http://localhost:5000/api/users/login', {
         username,
         password,
       });
-      handleLogin(response.data);
+      if (response && response.data) {
+        setSuccessMessage(response.data.message);
+        setUsername('');
+        setPassword('');
+        console.log('login successful');
+      }
     } catch (err) {
-      setError(err.response.data.message);
+      setErrorMessage(err.response.data.message);
     }
   };
-  
+
+
 
   return (
     <div className="container d-flex justify-content-center align-items-center">
       <div className="login-form-container">
         <h2>Login</h2>
         <form onSubmit={handleLoginSubmit}>
-          {error && <div className="alert alert-danger">{error}</div>}
+          {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
           <div className="form-group">
             <label htmlFor="username">Username:</label>
             <input
@@ -56,4 +64,3 @@ const LoginForm = ({ handleLogin }) => {
 };
 
 export default LoginForm;
-
