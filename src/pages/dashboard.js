@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import TaskForm from '../components/TaskForm';
 import TaskList from '../components/TaskList';
-import { createTask, getTasks, deleteTask } from '../services/taskService';
+import { createTask, getTasks, deleteTask } from '../api/services/taskService';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -32,11 +32,14 @@ class Dashboard extends Component {
     const { tasks } = this.state;
 
     return (
-      <div className="container mt-5">
-        <div className="row">
-          <div className="col-md-6 offset-md-3">
-            <TaskForm onCreateTask={this.handleCreateTask} />
-            <TaskList tasks={tasks} onDeleteTask={this.handleDeleteTask} />
+      <div className="bg-secondary p-3">
+        <h1 className="text-white">Dashboard</h1>
+        <div className="container mt-5">
+          <div className="row">
+            <div className="col-md-6 offset-md-3">
+              <TaskForm />
+              {/* <TaskList /> */}
+            </div>
           </div>
         </div>
       </div>

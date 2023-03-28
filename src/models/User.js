@@ -22,4 +22,4 @@ const userSchema = new mongoose.Schema({
     },
 });
 
-export default userSchema;
+module.exports = userSchema;

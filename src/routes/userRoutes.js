@@ -9,8 +9,7 @@ router.post('/signup', authService.signup);
 // Authenticate a user
 router.post('/login', authService.login);
 
-// Get the current user
-router.get('/me', authService.authenticate, userService.getCurrentUser);
+
 
 module.exports = router;
 

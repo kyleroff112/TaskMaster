@@ -33,5 +33,5 @@ const taskSchema = new mongoose.Schema({
     },
   });
   
-  export default taskSchema;
+  module.exports = taskSchema;
   

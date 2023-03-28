@@ -1,21 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import LoginForm from './components/LoginForm';
-import SignupForm from './components/SignupForm';
-import TaskList from './components/TaskList';
-import TaskListTest from './components/TaskListTest';
-import './App.css';
+import React, { useState } from 'react';
+import Landing from './pages/Landing';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [showTaskList, setShowTaskList] = useState(false);
-
-  useEffect(() => {
-    if (loggedIn) {
-      setShowTaskList(true);
-    } else {
-      setShowTaskList(false);
-    }
-  }, [loggedIn]);
+  const [showLoginForm, setShowLoginForm] = useState(true);
 
   const handleLogin = async (credentials) => {
     // handle login logic here
@@ -27,20 +16,22 @@ function App() {
     setLoggedIn(true);
   };
 
+  const toggleForm = () => {
+    setShowLoginForm(!showLoginForm);
+  };
+
   return (
     <div className="App">
       {loggedIn ? (
-        <h1>Welcome to the Dashboard</h1>
+        <Dashboard />
       ) : (
         <div>
-          <LoginForm handleLogin={handleLogin} handleSignup={handleSignup} />
-          <SignupForm handleSignup={handleSignup} />
+          <Landing showLoginForm={showLoginForm} handleLogin={handleLogin} handleSignup={handleSignup} />
         </div>
       )}
-      {showTaskList && <TaskListTest />}
     </div>
   );
 }
 
-
 export default App;
+

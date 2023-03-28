@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const taskService = require('../services/taskService');
+const taskService = require('../api/services/taskService');
 
 // Get all tasks
 router.get('/', taskService.getAllTasks);
