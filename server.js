@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const taskRoutes = require('./src/routes/taskRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 
 // Create Express app
@@ -24,7 +23,6 @@ db.once('open', () => {
 });
 
 // Use routes
-app.use('/api/tasks', taskRoutes);
 app.use('/api/users', userRoutes);
 
 // Start server

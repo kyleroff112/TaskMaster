@@ -6,6 +6,7 @@ import axios from 'axios';
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(true);
+  const [userId, setUserId] = useState(null);
 
   const handleLogin = async (credentials) => {
     try {
@@ -13,6 +14,7 @@ function App() {
       if (response && response.data) {
         setLoggedIn(true);
         setShowLoginForm(false);
+        setUserId(response.data.userId);
         console.log('login successful');
       }
     } catch (err) {
@@ -26,6 +28,7 @@ function App() {
       if (response && response.data) {
         setLoggedIn(true);
         setShowLoginForm(false);
+        setUserId(response.data.userId);
         console.log('signup successful');
       }
     } catch (err) {
@@ -37,7 +40,7 @@ function App() {
   return (
     <div className="App">
       {loggedIn ? (
-        <Dashboard />
+        <Dashboard userId={userId} />
       ) : (
         <div>
           <Landing showLoginForm={showLoginForm} handleLogin={handleLogin} handleSignup={handleSignup} />

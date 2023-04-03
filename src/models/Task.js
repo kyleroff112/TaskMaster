@@ -1,37 +1,20 @@
 const mongoose = require('mongoose');
 
 const taskSchema = new mongoose.Schema({
-    id: {
-      type: Number,
-      required: true,
-      unique: true,
-    },
-    title: {
-      type: String,
-      required: true,
-    },
-    description: {
-      type: String,
-      default: '',
-    },
-    start_time: {
-      type: Date,
-      required: true,
-    },
-    end_time: {
-      type: Date,
-      required: true,
-    },
-    user_id: {
-      type: Number,
-      required: true,
-    },
-    priority: {
-      type: String,
-      enum: ['low', 'medium', 'high'],
-      default: 'medium',
-    },
-  });
-  
-  module.exports = taskSchema;
-  
+  title: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    default: '',
+  },
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
+});
+
+const Task = mongoose.model('Task', taskSchema);
+
+module.exports = Task;

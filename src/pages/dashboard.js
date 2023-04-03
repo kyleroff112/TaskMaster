@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import TaskForm from '../components/TaskForm';
-import TaskList from '../components/TaskList';
-import { createTask, getTasks, deleteTask } from '../api/services/taskService';
+import axios from 'axios';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -12,32 +11,59 @@ class Dashboard extends Component {
   }
 
   async componentDidMount() {
-    const tasks = await getTasks();
+    const tasks = await this.getTasks();
     this.setState({ tasks });
   }
 
+  getTasks = async () => {
+    try {
+      const response = await axios.get('/api/tasks');
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  createTask = async (task) => {
+    try {
+      const response = await axios.post('/api/tasks', task);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  deleteTask = async (id) => {
+    try {
+      const response = await axios.delete(`/api/tasks/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   handleCreateTask = async (task) => {
-    await createTask(task);
-    const tasks = await getTasks();
+    await this.createTask(task);
+    const tasks = await this.getTasks();
     this.setState({ tasks });
   }
 
   handleDeleteTask = async (id) => {
-    await deleteTask(id);
-    const tasks = await getTasks();
+    await this.deleteTask(id);
+    const tasks = await this.getTasks();
     this.setState({ tasks });
   }
 
   render() {
     const { tasks } = this.state;
-
+  
     return (
       <div className="bg-secondary p-3">
         <h1 className="text-white">Dashboard</h1>
         <div className="container mt-5">
           <div className="row">
             <div className="col-md-6 offset-md-3">
-              <TaskForm />
+              <TaskForm userId={this.props.userId} onCreateTask={this.handleCreateTask} />
               {/* <TaskList /> */}
             </div>
           </div>
