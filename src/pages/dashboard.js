@@ -17,7 +17,7 @@ class Dashboard extends Component {
 
   getTasks = async () => {
     try {
-      const response = await axios.get('/api/tasks');
+      const response = await axios.get(`http://localhost:5000/api/users/${this.props.userId}/tasks`);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -26,7 +26,7 @@ class Dashboard extends Component {
 
   createTask = async (task) => {
     try {
-      const response = await axios.post('/api/tasks', task);
+      const response = await axios.post(`http://localhost:5000/api/users/${this.props.userId}/tasks`, task);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -35,7 +35,7 @@ class Dashboard extends Component {
 
   deleteTask = async (id) => {
     try {
-      const response = await axios.delete(`/api/tasks/${id}`);
+      const response = await axios.delete(`http://localhost:5000/api/tasks/${id}`);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -54,12 +54,19 @@ class Dashboard extends Component {
     this.setState({ tasks });
   }
 
+  handleLogout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+  }
+
   render() {
     const { tasks } = this.state;
-  
     return (
       <div className="bg-secondary p-3">
-        <h1 className="text-white">Dashboard</h1>
+        <div className="d-flex justify-content-between align-items-center">
+          <h1 className="text-white">Dashboard</h1>
+          <button className="btn btn-outline-light" onClick={this.handleLogout}>Logout</button>
+        </div>
         <div className="container mt-5">
           <div className="row">
             <div className="col-md-6 offset-md-3">
@@ -71,6 +78,8 @@ class Dashboard extends Component {
       </div>
     );
   }
+
 }
+
 
 export default Dashboard;

@@ -7,21 +7,22 @@ function TaskForm({ userId, onCreateTask }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    // Create a new task object
+  
+    // Create a new task object with the user ID
     const newTask = {
       title,
       description,
+      user_id: userId
     };
-
+  
     try {
       // Add the new task to the API
-      const response = await axios.post(`/api/users/${userId}/tasks`, newTask);
+      const response = await axios.post(`http://localhost:5000/api/users/${userId}/tasks`, newTask);
       console.log(response.data);
-
+  
       // Call the onCreateTask function with the new task data
       onCreateTask(response.data);
-
+  
       // Clear the form
       setTitle("");
       setDescription("");
@@ -29,7 +30,7 @@ function TaskForm({ userId, onCreateTask }) {
       console.error(error);
     }
   };
-
+  
   return (
     <div className="container">
       <h1 className="mt-5 mb-4">Add Task</h1>

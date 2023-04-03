@@ -11,11 +11,12 @@ const LoginForm = ({ handleLogin }) => {
     event.preventDefault();
     try {
       const response = await handleLogin({username, password});
-      setSuccessMessage(response.data.message);
+      setSuccessMessage(response.message);
     } catch (err) {
       setErrorMessage(err.response.data.message);
     }
   };
+  
   
   return (
     <div className="container d-flex justify-content-center align-items-center">

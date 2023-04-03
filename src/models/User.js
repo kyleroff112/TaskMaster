@@ -1,5 +1,7 @@
+//User.js
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -16,7 +18,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  tokens: [
+    {
+      token: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
 });
+
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
@@ -32,13 +43,25 @@ userSchema.pre('save', async function (next) {
 });
 
 userSchema.methods.matchPassword = async function (password) {
-  try {
-    return await bcrypt.compare(password, this.password);
-  } catch (err) {
-    throw new Error(err);
+  const user = this;
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    throw new Error('Invalid login credentials');
   }
+  const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
+  user.tokens = user.tokens.concat({ token });
+  await user.save();
+  return user;
 };
+
+
+userSchema.methods.generateAuthToken = function () {
+  const token = jwt.sign({ userId: this._id }, process.env.JWT_SECRET);
+  return token;
+};
+
 
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
+
