@@ -11,15 +11,19 @@ function TaskList({ tasks, handleDeleteTask }) {
   return (
     <div>
       <h1 className="text-center my-4">My Tasks</h1>
-      <ListGroup>
-        {taskList.map(task => (
-          <ListGroupItem key={task._id}>
-            <h5>{task.title}</h5>
-            <p>{task.description}</p>
-            <button className="btn btn-danger" onClick={() => handleDeleteTask(task._id)}>Delete</button>
-          </ListGroupItem>
-        ))}
-      </ListGroup>
+      {taskList && taskList.length > 0 ? (
+        <ListGroup>
+          {taskList.map(task => (
+            <ListGroupItem key={task._id}>
+              <h5>{task.title}</h5>
+              <p>{task.description}</p>
+              <button className="btn btn-danger" onClick={() => handleDeleteTask(task._id)}>Delete</button>
+            </ListGroupItem>
+          ))}
+        </ListGroup>
+      ) : (
+        <p>No tasks found</p>
+      )}
     </div>
   );
 }
