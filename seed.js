@@ -20,6 +20,8 @@ db.once('open', async () => {
   await User.deleteMany({});
   await Task.deleteMany({});
 
+  
+
   // Create 10 users
   const users = [];
   for (let i = 0; i < 10; i++) {
@@ -30,8 +32,8 @@ db.once('open', async () => {
     });
 
     // Generate JWT token for user
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
-    user.tokens = [{ token }];
+    // const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
+    // user.tokens = [{ token }];
 
     users.push(user);
   }

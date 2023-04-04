@@ -16,11 +16,13 @@ const auth = async (req, res, next) => {
     }
     req.token = token;
     req.user = user;
+    req.userId = decoded._id; // add decoded._id as the userId in the request object
     next();
   } catch (err) {
     res.status(401).json({ message: 'Not authorized to access this resource' });
   }
 };
+
 
 // Create a new user
 router.post('/signup', async (req, res) => {
@@ -39,6 +41,7 @@ router.post('/signup', async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
 
 
 // Authenticate a user
@@ -68,14 +71,32 @@ router.get('/', async (req, res) => {
 });
 
 // Get all tasks for a user
-router.get('/tasks', auth, async (req, res) => {
+router.get('/:id/tasks', auth, async (req, res) => {
   try {
-    const tasks = await Task.find({ user_id: req.user._id });
+    const tasks = await Task.find({ user_id: req.userId }); // use req.userId instead of req.params.id
     res.status(200).json(tasks);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
+
+
+
+// Post a new task for a user
+router.post('/tasks', auth, async (req, res) => {
+  try {
+    const task = new Task({
+      title: req.body.title,
+      description: req.body.description,
+      user_id: req.user._id // add the user's ID to the task
+    });
+    await task.save();
+    res.status(201).json({ task });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 
 // Delete a task for a user
 router.delete('/tasks/:id', auth, async (req, res) => {
@@ -90,21 +111,6 @@ router.delete('/tasks/:id', auth, async (req, res) => {
   }
 });
 
-// Middleware function to authenticate the token
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  if (token == null) {
-    return res.status(401).json({ message: 'Not authorized to access this resource' });
-  }
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ message: 'Forbidden' });
-    }
-    req.user = user;
-    next();
-  });
-}
 
 router.post('/logout', auth, async (req, res) => {
   try {

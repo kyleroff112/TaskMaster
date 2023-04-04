@@ -1,28 +1,24 @@
 import React, { useState } from "react";
-import axios from "axios";
 
-function TaskForm({ userId, onCreateTask }) {
+function TaskForm({ userId, createTask }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  const handleSubmit = async (event) => {
+  const handleAddTask = async (event) => {
     event.preventDefault();
-  
+
     // Create a new task object with the user ID
     const newTask = {
       title,
       description,
-      user_id: userId
+      userId,
     };
-  
+
     try {
-      // Add the new task to the API
-      const response = await axios.post(`http://localhost:5000/api/users/${userId}/tasks`, newTask);
+      // Add the new task to the API by calling the createTask function passed down from the parent component
+      const response = await createTask(newTask);
       console.log(response.data);
-  
-      // Call the onCreateTask function with the new task data
-      onCreateTask(response.data);
-  
+
       // Clear the form
       setTitle("");
       setDescription("");
@@ -30,11 +26,11 @@ function TaskForm({ userId, onCreateTask }) {
       console.error(error);
     }
   };
-  
+
   return (
     <div className="container">
       <h1 className="mt-5 mb-4">Add Task</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleAddTask}>
         <div className="form-group">
           <label htmlFor="title">Title</label>
           <input

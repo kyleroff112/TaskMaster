@@ -1,34 +1,24 @@
-import React, { useState, useEffect } from "react";
-import { taskService } from "../api/services/taskService";
+import React, { useState, useEffect } from 'react';
+import { ListGroup, ListGroupItem } from 'react-bootstrap';
 
-function TaskList() {
-  const [tasks, setTasks] = useState([]);
-  const userId = localStorage.getItem("userId");
+function TaskList({ tasks }) {
+  const [taskList, setTaskList] = useState(tasks);
 
   useEffect(() => {
-    //Fetch tasks from the API for the logged-in user
-    taskService.getTasks(userId).then((tasks) => {
-      setTasks(tasks);
-    });
-  }, [userId]);
+    setTaskList(tasks);
+  }, [tasks]);
 
   return (
-    <div className="container">
-      <h1 className="mt-5 mb-4">Task List</h1>
-      <ul className="list-group">
-        {tasks.map((task) => (
-          <li className="list-group-item" key={task.id}>
-            <h2>{task.title}</h2>
+    <div>
+      <h1 className="text-center my-4">My Tasks</h1>
+      <ListGroup>
+        {taskList.map(task => (
+          <ListGroupItem key={task._id}>
+            <h5>{task.title}</h5>
             <p>{task.description}</p>
-            <p>
-              <strong>Start time:</strong> {task.start_time}
-            </p>
-            <p>
-              <strong>End time:</strong> {task.end_time}
-            </p>
-          </li>
+          </ListGroupItem>
         ))}
-      </ul>
+      </ListGroup>
     </div>
   );
 }

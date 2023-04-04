@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import TaskForm from '../components/TaskForm';
+import TaskList from '../components/TaskList';
 import axios from 'axios';
 
 class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tasks: []
+      tasks: [],
+      showTaskForm: false
     };
   }
 
@@ -16,26 +18,44 @@ class Dashboard extends Component {
   }
 
   getTasks = async () => {
+    console.log('userId:', this.props.userId); // add this line
     try {
-      const response = await axios.get(`http://localhost:5000/api/users/${this.props.userId}/tasks`);
+      const response = await axios.get(`http://localhost:5000/api/users/${this.props.userId}/tasks`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
       return response.data;
     } catch (error) {
       console.error(error);
     }
   }
+  
 
   createTask = async (task) => {
     try {
-      const response = await axios.post(`http://localhost:5000/api/users/${this.props.userId}/tasks`, task);
+      const response = await axios.post(`http://localhost:5000/api/users/tasks`, {
+        ...task,
+        userId: this.props.userId,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // Pass the token as a Bearer token
+        }
+      });
       return response.data;
     } catch (error) {
       console.error(error);
     }
   }
 
+
   deleteTask = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:5000/api/tasks/${id}`);
+      const response = await axios.delete(`http://localhost:5000/api/tasks/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // Pass the token as a Bearer token
+        }
+      });
       return response.data;
     } catch (error) {
       console.error(error);
@@ -43,10 +63,15 @@ class Dashboard extends Component {
   }
 
   handleCreateTask = async (task) => {
-    await this.createTask(task);
-    const tasks = await this.getTasks();
-    this.setState({ tasks });
-  }
+    try {
+      const data = await this.createTask(task);
+      this.setState((prevState) => ({
+        tasks: [...prevState.tasks, data.task]
+      }));
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   handleDeleteTask = async (id) => {
     await this.deleteTask(id);
@@ -59,8 +84,15 @@ class Dashboard extends Component {
     window.location.href = '/login';
   }
 
+  handleToggleTaskForm = () => {
+    this.setState((prevState) => ({
+      showTaskForm: !prevState.showTaskForm
+    }));
+  };
+
   render() {
-    const { tasks } = this.state;
+    const { tasks, showTaskForm } = this.state;
+    console.log("Tasks State:", tasks); // Added console.log statement
     return (
       <div className="bg-secondary p-3">
         <div className="d-flex justify-content-between align-items-center">
@@ -70,8 +102,11 @@ class Dashboard extends Component {
         <div className="container mt-5">
           <div className="row">
             <div className="col-md-6 offset-md-3">
-              <TaskForm userId={this.props.userId} onCreateTask={this.handleCreateTask} />
-              {/* <TaskList /> */}
+              <div className="mb-3">
+                <button className="btn btn-primary" onClick={this.handleToggleTaskForm}>Add Task</button>
+              </div>
+              {showTaskForm && <TaskForm userId={this.props.userId} createTask={this.createTask} />}
+              <TaskList tasks={tasks} handleDeleteTask={this.handleDeleteTask} />
             </div>
           </div>
         </div>
@@ -81,5 +116,4 @@ class Dashboard extends Component {
 
 }
 
-
-export default Dashboard;
+export default Dashboard
