@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 
 const LoginForm = ({ handleLogin }) => {
   const [username, setUsername] = useState('');
@@ -13,7 +12,7 @@ const LoginForm = ({ handleLogin }) => {
       const response = await handleLogin({username, password});
       setSuccessMessage(response.message);
     } catch (err) {
-      setErrorMessage(err.response.data.message);
+      setErrorMessage(err.response.data?.message ?? err.response.message ?? "Something went wrong");
     }
   };
   

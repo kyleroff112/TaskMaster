@@ -58,7 +58,7 @@ class Dashboard extends Component {
 
   deleteTask = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:5000/api/tasks/${id}`, {
+      const response = await axios.delete(`http://localhost:5000/api/users/tasks/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}` // Pass the token as a Bearer token
         }

@@ -18,18 +18,14 @@ function App() {
   }, []);
 
   const handleLogin = async (credentials) => {
-    try {
-      const response = await axios.post('http://localhost:5000/api/users/login', credentials);
-      if (response && response.data) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('userId', response.data.userId);
-        setLoggedIn(true);
-        setShowLoginForm(false);
-        setUserId(response.data.userId);
-        console.log('login successful');
-      }
-    } catch (err) {
-      console.log(err);
+    const response = await axios.post('http://localhost:5000/api/users/login', credentials);
+    if (response && response.data) {
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userId', response.data.userId);
+      setLoggedIn(true);
+      setShowLoginForm(false);
+      setUserId(response.data.userId);
+      console.log('login successful');
     }
   };
 
