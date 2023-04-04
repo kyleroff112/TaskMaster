@@ -42,11 +42,18 @@ class Dashboard extends Component {
           'Authorization': `Bearer ${localStorage.getItem('token')}` // Pass the token as a Bearer token
         }
       });
+  
+      // Update the state with the new task
+      this.setState((prevState) => ({
+        tasks: [...prevState.tasks, response.data.task],
+      }));
+  
       return response.data;
     } catch (error) {
       console.error(error);
     }
   }
+  
 
 
   deleteTask = async (id) => {
@@ -71,7 +78,7 @@ class Dashboard extends Component {
     } catch (err) {
       console.log(err);
     }
-  };
+  };  
 
   handleDeleteTask = async (id) => {
     await this.deleteTask(id);
@@ -94,25 +101,38 @@ class Dashboard extends Component {
     const { tasks, showTaskForm } = this.state;
     console.log("Tasks State:", tasks); // Added console.log statement
     return (
-      <div className="bg-secondary p-3">
-        <div className="d-flex justify-content-between align-items-center">
-          <h1 className="text-white">Dashboard</h1>
-          <button className="btn btn-outline-light" onClick={this.handleLogout}>Logout</button>
-        </div>
-        <div className="container mt-5">
-          <div className="row">
-            <div className="col-md-6 offset-md-3">
-              <div className="mb-3">
-                <button className="btn btn-primary" onClick={this.handleToggleTaskForm}>Add Task</button>
+      <div className="dashboard-container">
+        <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+          <a className="navbar-brand" href="/">Dashboard</a>
+          <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav ml-auto">
+              <li className="nav-item">
+                <button className="btn btn-outline-primary" onClick={this.handleLogout}>Logout</button>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <div className="dashboard-content">
+          <div className="container mt-5">
+            <div className="row">
+              <div className="col-md-6 offset-md-3">
+                <div className="mb-3">
+                  <button className="btn btn-primary mt-3" onClick={this.handleToggleTaskForm}>Create a New Task</button>
+                </div>
+                {showTaskForm && <TaskForm userId={this.props.userId} createTask={this.createTask} />}
+                <TaskList tasks={tasks} handleDeleteTask={this.handleDeleteTask} />
               </div>
-              {showTaskForm && <TaskForm userId={this.props.userId} createTask={this.createTask} />}
-              <TaskList tasks={tasks} handleDeleteTask={this.handleDeleteTask} />
             </div>
           </div>
         </div>
       </div>
     );
   }
+  
+  
 
 }
 

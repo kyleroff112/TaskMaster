@@ -3,6 +3,14 @@ import React, { useState } from "react";
 function TaskForm({ userId, createTask }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  // const [taskName, setTaskName] = useState("");
+
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   const newTask = { name: taskName };
+  //   await handleCreateTask(newTask);
+  //   setTaskName('');
+  // };
 
   const handleAddTask = async (event) => {
     event.preventDefault();
