@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Landing from './pages/landing';
+import Landing from './pages/Landing';
 import Dashboard from './pages/dashboard';
 import { useMutation } from '@apollo/client';
 import { LOGIN_USER } from './utils/mutations';
