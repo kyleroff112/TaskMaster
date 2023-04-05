@@ -29,6 +29,7 @@ const SignupForm = () => {
   return (
     <div className="container d-flex justify-content-center align-items-center">
       <div className="signup-form-container">
+        <h1>TaskMaster</h1>
         <h2>Signup Form</h2>
         {successMessage && <div className="alert alert-success">{successMessage}</div>}
         {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}

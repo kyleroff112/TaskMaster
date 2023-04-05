@@ -20,6 +20,7 @@ const LoginForm = ({ handleLogin }) => {
   return (
     <div className="container d-flex justify-content-center align-items-center">
       <div className="login-form-container">
+        <h1>TaskMaster</h1>
         <h2>Login</h2>
         <form onSubmit={handleSubmit}>
           {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}

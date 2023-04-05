@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://kyleroff112:BeScpC3xpt2FJbgm@cluster0.cqe1b5c.mongodb.net/test', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/taskapp', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
