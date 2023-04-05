@@ -1,143 +1,120 @@
-import React, { Component } from 'react';
-import TaskForm from '../components/TaskForm';
-import TaskList from '../components/TaskList';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import TaskForm from "../components/TaskForm";
+import TaskList from "../components/TaskList";
+import axios from "axios";
+import { useMutation } from "@apollo/client";
+import { CREATE_TASK, DELETE_TASK, GET_ALL_TASKS_FOR_USER } from "../utils/mutations";
 
-class Dashboard extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tasks: [],
-      showTaskForm: false
-    };
-  }
+function Dashboard(props) {
+  const [tasks, setTasks] = useState([]);
+  const [showTaskForm, setShowTaskForm] = useState(false);
+  const [getTasksForUser] = useMutation(GET_ALL_TASKS_FOR_USER);
+  const [createTaskMut] = useMutation(CREATE_TASK);
+  const [deleteTaskMut] = useMutation(DELETE_TASK);
 
-  async componentDidMount() {
-    const tasks = await this.getTasks();
-    this.setState({ tasks });
-  }
-
-  getTasks = async () => {
-    console.log('userId:', this.props.userId); // add this line
-    try {
-      const response = await axios.get(`http://localhost:5000/api/users/${this.props.userId}/tasks`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      return response.data;
-    } catch (error) {
-      console.error(error);
+  useEffect(() => {
+    const getAllTasks = async () => {
+      const data = await getTasks();
+      setTasks(data);
     }
-  }
-  
+    getAllTasks()
+  }, []);
 
-  createTask = async (task) => {
-    try {
-      const response = await axios.post(`http://localhost:5000/api/users/tasks`, {
-        ...task,
-        userId: this.props.userId,
-      }, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Pass the token as a Bearer token
-        }
-      });
-  
-      // Update the state with the new task
-      this.setState((prevState) => ({
-        tasks: [...prevState.tasks, response.data.task],
-      }));
-  
-      return response.data;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-   
-  deleteTask = async (id) => {
-    try {
-      const response = await axios.delete(`http://localhost:5000/api/users/tasks/${id}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Pass the token as a Bearer token
-        }
-      });
-      return response.data;
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  const getTasks = async () => {
+    const data = await getTasksForUser({ variables: { userId: props.userId } });
+    return data.data.getAllTasksForUser;
+  };
 
-  handleCreateTask = async (task) => {
+  const createTask = async (task) => {
+    const data = await createTaskMut({ variables: { ...task, user_id: props.userId } });
+    return data.data.createTask;
+  };
+
+  const deleteTask = async (id) => {
+    const data = await deleteTaskMut({ variables: { id } });
+    return data.data.deleteTask;
+  };
+
+  const handleCreateTask = async (task) => {
     try {
-      const data = await this.createTask(task);
-      this.setState((prevState) => ({
-        tasks: [...prevState.tasks, data.task]
-      }));
+      const data = await createTask(task);
+      setTasks((prev) => [...prev, data]);
     } catch (err) {
       console.log(err);
     }
   };
-  
-  handleCompleteTask = async (id) => {
-    await this.completeTask(id);
-    const tasks = await this.getTasks();
-    this.setState({ tasks });
-  }
-  
-  handleDeleteTask = async (id) => {
-    await this.deleteTask(id);
-    const tasks = await this.getTasks();
-    this.setState({ tasks });
-  }
 
-  handleLogout = () => {
-    localStorage.removeItem('token');
-    window.location.href = '/login';
-  }
 
-  handleToggleTaskForm = () => {
-    this.setState((prevState) => ({
-      showTaskForm: !prevState.showTaskForm
-    }));
+  const handleDeleteTask = async (id) => {
+    await deleteTask(id);
+    const data = await getTasks();
+    setTasks(data);
   };
 
-  render() {
-    const { tasks, showTaskForm } = this.state;
-    console.log("Tasks State:", tasks); // Added console.log statement
-    return (
-      <div className="dashboard-container">
-        <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-          <a className="navbar-brand" href="/">Dashboard</a>
-          <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <button className="btn btn-outline-primary" onClick={this.handleLogout}>Logout</button>
-              </li>
-            </ul>
-          </div>
-        </nav>
-        <div className="dashboard-content">
-          <div className="container mt-5">
-            <div className="row">
-              <div className="col-md-6 offset-md-3">
-                <div className="mb-3">
-                  <button className="btn btn-primary mt-3" onClick={this.handleToggleTaskForm}>Create a New Task</button>
-                </div>
-                {showTaskForm && <TaskForm userId={this.props.userId} createTask={this.createTask} />}
-                <TaskList tasks={tasks} handleDeleteTask={this.handleDeleteTask} handleCompleteTask={this.handleCompleteTask} />
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  };
+
+  const handleToggleTaskForm = () => {
+    setShowTaskForm(!showTaskForm);
+  };
+
+  return (
+    <div className="dashboard-container">
+      <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a className="navbar-brand" href="/">
+          Dashboard
+        </a>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav ml-auto">
+            <li className="nav-item">
+              <button
+                className="btn btn-outline-primary"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div className="dashboard-content">
+        <div className="container mt-5">
+          <div className="row">
+            <div className="col-md-6 offset-md-3">
+              <div className="mb-3">
+                <button
+                  className="btn btn-primary mt-3"
+                  onClick={handleToggleTaskForm}
+                >
+                  Create a New Task
+                </button>
               </div>
+              {showTaskForm && (
+                <TaskForm userId={props.userId} createTask={handleCreateTask} />
+              )}
+              <TaskList
+                tasks={tasks}
+                handleDeleteTask={handleDeleteTask}
+              />
             </div>
           </div>
         </div>
       </div>
-    );
-  }
-  
-  
-
+    </div>
+  );
 }
 
-export default Dashboard
+export default Dashboard;
