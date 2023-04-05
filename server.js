@@ -35,12 +35,14 @@ async function startApolloServer() {
   apolloServer.applyMiddleware({ app, path: '/graphql' });
 }
 
-startApolloServer();
-
 app.use(express.static(path.join(__dirname, 'build')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
+
+startApolloServer();
+
+
 
 // Start server
 const PORT = process.env.PORT || 5000;
