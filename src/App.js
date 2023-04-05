@@ -2,12 +2,17 @@ import React, { useState, useEffect } from 'react';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import axios from 'axios';
+import { useMutation } from '@apollo/client';
+import { LOGIN_USER } from './utils/mutations';
+import { CREATE_USER } from './utils/mutations';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(true);
   const [userId, setUserId] = useState(null);
 
+  const [login] = useMutation(LOGIN_USER)
+  const [signup] = useMutation(CREATE_USER)
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -18,26 +23,28 @@ function App() {
   }, []);
 
   const handleLogin = async (credentials) => {
-    const response = await axios.post('http://localhost:5000/api/users/login', credentials);
+    const response = await login({ variables: { ...credentials } });
+    console.log(response);
     if (response && response.data) {
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('userId', response.data.userId);
+      localStorage.setItem('token', response.data.login.token);
+      localStorage.setItem('userId', response.data.login.user.id);
       setLoggedIn(true);
       setShowLoginForm(false);
-      setUserId(response.data.userId);
+      setUserId(response.data.login.user.id);
       console.log('login successful');
     }
   };
 
   const handleSignup = async (credentials) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/users/signup', credentials);
+      const response = await signup({ variables: { ...credentials } });
+      console.log(response);
       if (response && response.data) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('userId', response.data.userId);
+        localStorage.setItem('token', response.data.createUser.token);
+        localStorage.setItem('userId', response.data.createUser.user.id);
         setLoggedIn(true);
         setShowLoginForm(false);
-        setUserId(response.data.userId);
+        setUserId(response.data.createUser.user.id);
         console.log('signup successful');
       }
     } catch (err) {

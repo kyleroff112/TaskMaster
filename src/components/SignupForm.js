@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useMutation } from '@apollo/client';
+import { CREATE_USER } from '../utils/mutations';
+
+
 
 const SignupForm = () => {
   const [username, setUsername] = useState('');
+  const [signup] = useMutation(CREATE_USER)
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -11,18 +16,13 @@ const SignupForm = () => {
   const handleSignupSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/users/signup', {
-        username,
-        password,
-        email,
-      });
-
-      setSuccessMessage(response.data.message);
+      const response = await signup({ variables: { email, password, username } });;
+      setSuccessMessage('Signup successful! Please login.');
       setUsername('');
       setPassword('');
       setEmail('');
     } catch (err) {
-      setErrorMessage(err.response.data.message);
+      setErrorMessage(err.message);
     }
   };
 

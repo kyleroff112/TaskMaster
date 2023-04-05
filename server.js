@@ -2,6 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const userRoutes = require('./src/routes/userRoutes');
+const { ApolloServer } = require('apollo-server');
+const { typeDefs, resolvers } = require('./src/schema');
+
+
 
 // Create Express app
 const app = express();
@@ -22,13 +26,20 @@ db.once('open', () => {
   console.log('Connected to MongoDB database');
 });
 
+const apolloServer = new ApolloServer({
+  typeDefs,
+  resolvers,
+});
+
 // Use routes
 app.use('/api/users', userRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+apolloServer.listen(PORT, () => {
+  console.log(`GraphQL is running at ${PORT}`);
 });
+
+
 
