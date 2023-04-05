@@ -7,6 +7,7 @@ const { ApolloServer } = require('apollo-server-express');
 const { typeDefs, resolvers } = require('./src/schema');
 require('dotenv').config();
 
+
 // Create Express app
 const app = express();
 
