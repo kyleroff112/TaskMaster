@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
-import axios from 'axios';
 import { useMutation } from '@apollo/client';
 import { LOGIN_USER } from './utils/mutations';
 import { CREATE_USER } from './utils/mutations';
