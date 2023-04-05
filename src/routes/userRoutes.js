@@ -80,6 +80,32 @@ router.get('/:id/tasks', auth, async (req, res) => {
   }
 });
 
+// // Get all completed tasks for a user
+// router.get(':id/tasks', auth, async (req, res) => {
+//   try {
+//     const tasks = await Task.find({ user_id: req.userId, completed: true }); // use req.userId instead of req.params.id
+//     res.status(200).json(tasks);
+//   } catch (err) {
+//     res.status(400).json({ message: err.message });
+//   }
+// });
+
+// // Update a task to completed for a user
+// router.put('/tasks/:id', auth, async (req, res) => {
+//   try {
+//     const updatedTask = await Task.findOneAndUpdate(
+//       { _id: req.params.id, user_id: req.userId },
+//       { $set: { completed: true } },
+//       { new: true }
+//     );
+//     if (!updatedTask) {
+//       return res.status(404).json({ message: 'Task not found' });
+//     }
+//     res.json(updatedTask);
+//   } catch (err) {
+//     res.status(400).json({ message: err.message });
+//   }
+// });
 
 
 // Post a new task for a user

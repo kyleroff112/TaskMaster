@@ -18,6 +18,7 @@ function TaskList({ tasks, handleDeleteTask }) {
               <h5>{task.title}</h5>
               <p>{task.description}</p>
               <button className="btn btn-danger" onClick={() => handleDeleteTask(task._id)}>Delete</button>
+              {/* {!task.completed && <button className="btn btn-success" onClick={() => handleCompleteTask(task)}>Complete</button>} */}
             </ListGroupItem>
           ))}
         </ListGroup>

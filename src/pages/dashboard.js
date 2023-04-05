@@ -53,9 +53,29 @@ class Dashboard extends Component {
       console.error(error);
     }
   }
-  
 
+  completeTask = async (task) => {
+    try {
+      const response = await axios.put(`http://localhost:5000/api/users/tasks/${task._id}`, {
+        ...task,
+        completed: true,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // Pass the token as a Bearer token
+        }
+      });
 
+      // Update the state with the new task
+      this.setState((prevState) => ({
+        tasks: [...prevState.tasks, response.data.task],
+      }));
+
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+   
   deleteTask = async (id) => {
     try {
       const response = await axios.delete(`http://localhost:5000/api/users/tasks/${id}`, {
@@ -78,8 +98,14 @@ class Dashboard extends Component {
     } catch (err) {
       console.log(err);
     }
-  };  
-
+  };
+  
+  handleCompleteTask = async (id) => {
+    await this.completeTask(id);
+    const tasks = await this.getTasks();
+    this.setState({ tasks });
+  }
+  
   handleDeleteTask = async (id) => {
     await this.deleteTask(id);
     const tasks = await this.getTasks();
@@ -123,7 +149,7 @@ class Dashboard extends Component {
                   <button className="btn btn-primary mt-3" onClick={this.handleToggleTaskForm}>Create a New Task</button>
                 </div>
                 {showTaskForm && <TaskForm userId={this.props.userId} createTask={this.createTask} />}
-                <TaskList tasks={tasks} handleDeleteTask={this.handleDeleteTask} />
+                <TaskList tasks={tasks} handleDeleteTask={this.handleDeleteTask} handleCompleteTask={this.handleCompleteTask} />
               </div>
             </div>
           </div>

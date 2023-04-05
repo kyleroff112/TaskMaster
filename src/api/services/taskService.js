@@ -39,24 +39,41 @@ async function createTask(req, res, next) {
   }
 }
 
-async function updateTask(req, res, next) {
-  try {
-    const task = await Task.findById(req.params.id);
-    if (!task) {
-      return res.status(404).json({ message: 'Task not found' });
-    }
-    if (task.user.toString() !== req.user._id) {
-      return res.status(403).json({ message: 'You are not authorized to update this task' });
-    }
-    task.name = req.body.name;
-    task.description = req.body.description;
-    task.date = req.body.date;
-    await task.save();
-    res.json(task);
-  } catch (err) {
-    next(err);
-  }
-}
+// async function updateTask(req, res, next) {
+//   try {
+//     const task = await Task.findById(req.params.id);
+//     if (!task) {
+//       return res.status(404).json({ message: 'Task not found' });
+//     }
+//     if (task.user.toString() !== req.user._id) {
+//       return res.status(403).json({ message: 'You are not authorized to update this task' });
+//     }
+//     task.name = req.body.name;
+//     task.description = req.body.description;
+//     task.date = req.body.date;
+//     await task.save();
+//     res.json(task);
+//   } catch (err) {
+//     next(err);
+//   }
+// }
+
+// async function updateCompletedTask(taskId, userId) {
+//   try {
+//     const task = await Task.findOneAndUpdate(
+//       { _id: taskId, user: userId, completed: true },
+//       { $set: { completed: false } },
+//       { new: true }
+//     );
+//     if (!task) {
+//       throw new Error('Task not found or not completed by this user');
+//     }
+//     return task;
+//   } catch (err) {
+//     throw err;
+//   }
+// }
+
 
 async function deleteTask(req, res, next) {
   try {
@@ -79,5 +96,6 @@ module.exports = {
   getTaskById,
   createTask,
   updateTask,
-  deleteTask
+  deleteTask,
+  updateCompletedTask,
 };
