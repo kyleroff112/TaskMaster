@@ -53,28 +53,6 @@ class Dashboard extends Component {
       console.error(error);
     }
   }
-
-  completeTask = async (task) => {
-    try {
-      const response = await axios.put(`http://localhost:5000/api/users/tasks/${task._id}`, {
-        ...task,
-        completed: true,
-      }, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Pass the token as a Bearer token
-        }
-      });
-
-      // Update the state with the new task
-      this.setState((prevState) => ({
-        tasks: [...prevState.tasks, response.data.task],
-      }));
-
-      return response.data;
-    } catch (error) {
-      console.error(error);
-    }
-  }
    
   deleteTask = async (id) => {
     try {

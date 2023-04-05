@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import SignupForm from '../components/SignupForm';
 import LoginForm from '../components/LoginForm';
-import Dashboard from './Dashboard';
+import Dashboard from './dashboard';
 import axios from 'axios';
 
 function Landing(props) {
