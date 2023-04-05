@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const userRoutes = require('./src/routes/userRoutes');
 const { ApolloServer } = require('apollo-server-express');
 const { typeDefs, resolvers } = require('./src/schema');
+require('dotenv').config();
 
 // Create Express app
 const app = express();
